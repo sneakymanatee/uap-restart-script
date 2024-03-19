@@ -7,6 +7,9 @@ from logging.handlers import RotatingFileHandler
 import click
 import requests
 from requests import Session
+from urllib3.exceptions import InsecureRequestWarning
+
+requests.packages.urllib3.disable_warnings(category=InsecureRequestWarning)
 
 logging.getLogger().setLevel(logging.INFO)
 logging_format = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
