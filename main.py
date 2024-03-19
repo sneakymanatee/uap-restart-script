@@ -6,8 +6,12 @@ import requests
 from requests import Session
 import time
 
-logging.basicConfig(filename="uap-restart.log", level=logging.INFO)
-
+logging.basicConfig(
+    format='%(asctime)s %(levelname)-8s %(message)s',
+    level=logging.INFO,
+    datefmt='%Y-%m-%d %H:%M:%S',
+    filename="uap-restart.log",
+)
 
 def login(host: str, username: str, password: str, session: Session):
     url = f"https://{host}/api/auth/login"
@@ -24,11 +28,11 @@ def login(host: str, username: str, password: str, session: Session):
     }
     response = session.request("POST", url, headers=headers, data=payload, verify=False)
 
-    logging.info(response.text)
-    logging.info(response.headers)
-    logging.info(session.cookies)
+    logging.debug(response.text)
+    logging.debug(response.headers)
+    logging.debug(session.cookies)
     session.headers['x-csrf-token'] = response.headers['x-csrf-token']
-    logging.info(session.headers)
+    logging.debug(session.headers)
 
 
 def get_uap(host: str, session: Session):
@@ -86,4 +90,6 @@ def run(host: str, username: str, password: str):
 
 
 if __name__ == '__main__':
+    logging.info("Start")
     run()
+    logging.info("End")
