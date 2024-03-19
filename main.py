@@ -1,17 +1,24 @@
 import json
 import logging
+import sys
+import time
+from logging.handlers import RotatingFileHandler
 
 import click
 import requests
 from requests import Session
-import time
 
-logging.basicConfig(
-    format='%(asctime)s %(levelname)-8s %(message)s',
-    level=logging.INFO,
-    datefmt='%Y-%m-%d %H:%M:%S',
-    filename="uap-restart.log",
-)
+logging.getLogger().setLevel(logging.INFO)
+logging_format = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+
+stdOutHandler = logging.StreamHandler(sys.stdout)
+stdOutHandler.setFormatter(logging_format)
+logging.getLogger().addHandler(stdOutHandler)
+
+fileHandler = RotatingFileHandler("uap-restart.log", maxBytes=(1048576 * 5), backupCount=7)
+fileHandler.setFormatter(logging_format)
+logging.getLogger().addHandler(fileHandler)
+
 
 def login(host: str, username: str, password: str, session: Session):
     url = f"https://{host}/api/auth/login"
